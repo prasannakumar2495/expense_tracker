@@ -67,68 +67,47 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "",
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: const Text("Expense App"),
-          actions: [
-            IconButton(
-              onPressed: (() => _startAddNewTransaction(context)),
-              icon: const Icon(Icons.add),
-            ),
-          ],
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.black)),
-              child: const Card(
-                color: Colors.blue,
-                elevation: 5,
-                child: Text("CHART!"),
+      title: "Expense App",
+      home: Builder(builder: (context) {
+        /**
+         * We have surrounded the Scaffold with Builder, to get the perfect "context".
+         * So, that we can pass it to the BottomSheet.
+         * If not, BottomSheet is not being displayed.
+         */
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Expense App"),
+            actions: [
+              IconButton(
+                onPressed: () => _startAddNewTransaction(context),
+                icon: const Icon(Icons.add),
               ),
-            ),
-            TransactionList(userTransaction: _userTransaction),
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => _startAddNewTransaction(context),
-        ),
-      ),
-    );
-  }
-}
-
-class BottomSheetDemo extends StatelessWidget {
-  final Function addNewTransaction;
-
-  const BottomSheetDemo({Key? key, required this.addNewTransaction})
-      : super(key: key);
-
-  void _startAddNewTransaction(BuildContext ctx) {
-    showModalBottomSheet(
-      context: ctx,
-      builder: (_) {
-        return GestureDetector(
-          onTap: () {},
-          behavior: HitTestBehavior.opaque,
-          child: NewTransaction(addNewTransaction),
+            ],
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.black)),
+                child: const Card(
+                  color: Colors.blue,
+                  elevation: 5,
+                  child: Text("CHART!"),
+                ),
+              ),
+              TransactionList(userTransaction: _userTransaction),
+            ],
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () => _startAddNewTransaction(context),
+          ),
         );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: (() => _startAddNewTransaction(context)),
-      icon: const Icon(Icons.add),
+      }),
     );
   }
 }

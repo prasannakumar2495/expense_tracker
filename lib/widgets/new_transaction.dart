@@ -26,6 +26,8 @@ class NewTransaction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
+        height: 200,
+        width: double.infinity,
         decoration:
             BoxDecoration(border: Border.all(width: 2, color: Colors.black)),
         padding: const EdgeInsets.all(10),
