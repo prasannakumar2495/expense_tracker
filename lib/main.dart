@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:expense_tracker/widgets/chart.dart';
 import 'package:expense_tracker/widgets/new_transaction.dart';
 import 'package:expense_tracker/widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
@@ -24,19 +25,29 @@ class _MyAppState extends State<MyApp> {
   final amountController = TextEditingController();
 
   final List<Transaction> _userTransaction = [
-    Transaction(
-      id: "t1",
-      title: "New Shoes",
-      amount: 69.99,
-      dateTime: DateTime.now(),
-    ),
-    Transaction(
-      id: "t2",
-      title: "Groceries",
-      amount: 9.99,
-      dateTime: DateTime.now(),
-    ),
+    // Transaction(
+    //   id: "t1",
+    //   title: "New Shoes",
+    //   amount: 69.99,
+    //   dateTime: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: "t2",
+    //   title: "Groceries",
+    //   amount: 9.99,
+    //   dateTime: DateTime.now(),
+    // ),
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransaction.where((tx) {
+      return tx.dateTime.isAfter(
+        DateTime.now().subtract(
+          const Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
 
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
@@ -67,7 +78,23 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Expense App",
+      title: "Personal Expense App",
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
+            .copyWith(secondary: Colors.amber),
+        fontFamily: 'Quicksand',
+        appBarTheme: AppBarTheme(
+          titleTextStyle: ThemeData.light()
+              .textTheme
+              .copyWith(
+                  headline6: const TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ))
+              .headline6,
+        ),
+      ),
       home: Builder(builder: (context) {
         /**
          * We have surrounded the Scaffold with Builder, to get the perfect "context".
@@ -75,8 +102,10 @@ class _MyAppState extends State<MyApp> {
          * If not, BottomSheet is not being displayed.
          */
         return Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            title: const Text("Expense App"),
+            /**This is the name displayed, in the AppBar when the application is open. */
+            title: const Text("Personal Expense App"),
             actions: [
               IconButton(
                 onPressed: () => _startAddNewTransaction(context),
@@ -87,15 +116,10 @@ class _MyAppState extends State<MyApp> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Container(
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 4,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Colors.black)),
-                child: const Card(
-                  color: Colors.blue,
-                  elevation: 5,
-                  child: Text("CHART!"),
-                ),
+                child: Chart(recentTransactions: _recentTransactions),
               ),
               TransactionList(userTransaction: _userTransaction),
             ],
