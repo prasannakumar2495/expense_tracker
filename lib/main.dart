@@ -49,12 +49,13 @@ class _MyAppState extends State<MyApp> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
       id: DateTime.now().toString(),
       title: txTitle,
       amount: txAmount,
-      dateTime: DateTime.now(),
+      dateTime: chosenDate,
     );
 
     setState(() {
@@ -87,17 +88,18 @@ class _MyAppState extends State<MyApp> {
           titleTextStyle: ThemeData.light()
               .textTheme
               .copyWith(
-                  headline6: const TextStyle(
-                fontFamily: 'OpenSans',
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ))
+                headline6: const TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
               .headline6,
         ),
       ),
       home: Builder(builder: (context) {
         /**
-         * We have surrounded the Scaffold with Builder, to get the perfect "context".
+         * We have surrounded the IconButton with Builder, to get the perfect "context".
          * So, that we can pass it to the BottomSheet.
          * If not, BottomSheet is not being displayed.
          */
@@ -107,10 +109,12 @@ class _MyAppState extends State<MyApp> {
             /**This is the name displayed, in the AppBar when the application is open. */
             title: const Text("Personal Expense App"),
             actions: [
-              IconButton(
-                onPressed: () => _startAddNewTransaction(context),
-                icon: const Icon(Icons.add),
-              ),
+              Builder(builder: (context) {
+                return IconButton(
+                  onPressed: () => _startAddNewTransaction(context),
+                  icon: const Icon(Icons.add),
+                );
+              }),
             ],
           ),
           body: Column(
