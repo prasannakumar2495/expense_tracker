@@ -1,3 +1,4 @@
+import 'package:expense_tracker/widgets/AdaptiveTextButton.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -39,9 +40,9 @@ class _NewTransactionState extends State<NewTransaction> {
     Navigator.of(context).pop();
   }
 
-  void _persentDatePicker(BuildContext context) {
+  void _presentDatePicker(BuildContext ctx) {
     showDatePicker(
-      context: context,
+      context: ctx,
       initialDate: DateTime.now(),
       firstDate: DateTime(2022),
       lastDate: DateTime.now(),
@@ -59,59 +60,57 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          TextField(
-            controller: _titleController,
-            // onChanged: (value) {
-            //   _titleInput = value;
-            // },
-            decoration: const InputDecoration(labelText: "Title"),
-            onSubmitted: (_) => _submitData(),
+    return SingleChildScrollView(
+      child: Card(
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
           ),
-          TextField(
-            controller: _amountController,
-            // onChanged: (value) {
-            //   _amountInput = value;
-            // },
-            decoration: const InputDecoration(labelText: "Amount"),
-            keyboardType: const TextInputType.numberWithOptions(
-                signed: true, decimal: true),
-            onSubmitted: (_) => _submitData(),
-          ),
-          SizedBox(
-            height: 70,
-            child: Row(
-              children: [
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: Text(
-                    _selectedDate == null
-                        ? "No Date Choosen!"
-                        : "Picked Date: ${DateFormat.yMMMd().format(_selectedDate!)}",
-                  ),
-                ),
-                Builder(builder: (context) {
-                  return TextButton(
-                    onPressed: () => _persentDatePicker(context),
-                    child: const Text(
-                      "Choose Date",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
-                })
-              ],
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(labelText: "Title"),
+              onSubmitted: (_) => _submitData(),
             ),
-          ),
-          ElevatedButton(
-            onPressed: _submitData,
-            child: const Text("Add Transaction"),
-          )
-        ]),
+            TextField(
+              controller: _amountController,
+              decoration: const InputDecoration(labelText: "Amount"),
+              keyboardType: const TextInputType.numberWithOptions(
+                  signed: true, decimal: true),
+              onSubmitted: (_) => _submitData(),
+            ),
+            SizedBox(
+              height: 70,
+              child: Row(
+                children: [
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: Text(
+                      _selectedDate == null
+                          ? "No Date Choosen!"
+                          : "Picked Date: ${DateFormat.yMMMd().format(_selectedDate!)}",
+                    ),
+                  ),
+                  Builder(
+                    builder: (ctx) {
+                      return AdaptiveTextButton(
+                        text: "Choose Date",
+                        handler: () => _presentDatePicker(ctx),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
+            ElevatedButton(
+              onPressed: _submitData,
+              child: const Text("Add Transaction"),
+            )
+          ]),
+        ),
       ),
     );
   }
