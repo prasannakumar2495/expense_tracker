@@ -76,11 +76,20 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransaction.removeWhere(
+        (element) => element.id == id,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Personal Expense App",
       theme: ThemeData(
+        errorColor: Colors.red,
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
             .copyWith(secondary: Colors.amber),
         fontFamily: 'Quicksand',
@@ -125,7 +134,10 @@ class _MyAppState extends State<MyApp> {
                 width: double.infinity,
                 child: Chart(recentTransactions: _recentTransactions),
               ),
-              TransactionList(userTransaction: _userTransaction),
+              TransactionList(
+                userTransaction: _userTransaction,
+                deleteTransaction: _deleteTransaction, 
+              ),
             ],
           ),
           floatingActionButtonLocation:
