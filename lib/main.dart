@@ -118,6 +118,76 @@ class _HomeState extends State<Home> {
     });
   }
 
+  List<Widget> _buildLandscapeContent(
+      MediaQueryData mediaQuery, ObstructingPreferredSizeWidget appBar) {
+    return [
+      SizedBox(
+        height: ((mediaQuery.size.height) -
+                (appBar.preferredSize.height) -
+                (mediaQuery.padding.top)) *
+            0.2,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Show Chart"),
+            Switch.adaptive(
+              activeColor: Theme.of(context).colorScheme.secondary,
+              value: _showChart,
+              onChanged: (value) {
+                setState(() {
+                  _showChart = value;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+      _showChart
+          ? SizedBox(
+              height: ((mediaQuery.size.height) -
+                      (appBar.preferredSize.height) -
+                      (mediaQuery.padding.top)) *
+                  0.7,
+              width: double.infinity,
+              child: Chart(recentTransactions: _recentTransactions),
+            )
+          : SizedBox(
+              height: ((mediaQuery.size.height) -
+                      (appBar.preferredSize.height) -
+                      (mediaQuery.padding.top)) *
+                  0.7,
+              child: TransactionList(
+                userTransaction: _userTransaction,
+                deleteTransaction: _deleteTransaction,
+              ),
+            ),
+    ];
+  }
+
+  List<Widget> _buildPortraitContent(
+      MediaQueryData mediaQuery, ObstructingPreferredSizeWidget appBar) {
+    return [
+      SizedBox(
+        height: ((mediaQuery.size.height) -
+                (appBar.preferredSize.height) -
+                (mediaQuery.padding.top)) *
+            0.3,
+        width: double.infinity,
+        child: Chart(recentTransactions: _recentTransactions),
+      ),
+      SizedBox(
+        height: ((mediaQuery.size.height) -
+                (appBar.preferredSize.height) -
+                (mediaQuery.padding.top)) *
+            0.6,
+        child: TransactionList(
+          userTransaction: _userTransaction,
+          deleteTransaction: _deleteTransaction,
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -152,67 +222,11 @@ class _HomeState extends State<Home> {
       child: Column(
         children: <Widget>[
           if (mediaQuery.orientation == Orientation.landscape)
-            SizedBox(
-              height: ((mediaQuery.size.height) -
-                      (appBar.preferredSize.height) -
-                      (mediaQuery.padding.top)) *
-                  0.2,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Show Chart"),
-                  Switch.adaptive(
-                    activeColor: Theme.of(context).colorScheme.secondary,
-                    value: _showChart,
-                    onChanged: (value) {
-                      setState(() {
-                        _showChart = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-          if (mediaQuery.orientation == Orientation.landscape)
-            _showChart
-                ? SizedBox(
-                    height: ((mediaQuery.size.height) -
-                            (appBar.preferredSize.height) -
-                            (mediaQuery.padding.top)) *
-                        0.7,
-                    width: double.infinity,
-                    child: Chart(recentTransactions: _recentTransactions),
-                  )
-                : SizedBox(
-                    height: ((mediaQuery.size.height) -
-                            (appBar.preferredSize.height) -
-                            (mediaQuery.padding.top)) *
-                        0.7,
-                    child: TransactionList(
-                      userTransaction: _userTransaction,
-                      deleteTransaction: _deleteTransaction,
-                    ),
-                  ),
+            ..._buildLandscapeContent(
+                mediaQuery, appBar as ObstructingPreferredSizeWidget),
           if (!(MediaQuery.of(context).orientation == Orientation.landscape))
-            SizedBox(
-              height: ((mediaQuery.size.height) -
-                      (appBar.preferredSize.height) -
-                      (mediaQuery.padding.top)) *
-                  0.3,
-              width: double.infinity,
-              child: Chart(recentTransactions: _recentTransactions),
-            ),
-          if (!(MediaQuery.of(context).orientation == Orientation.landscape))
-            SizedBox(
-              height: ((mediaQuery.size.height) -
-                      (appBar.preferredSize.height) -
-                      (mediaQuery.padding.top)) *
-                  0.6,
-              child: TransactionList(
-                userTransaction: _userTransaction,
-                deleteTransaction: _deleteTransaction,
-              ),
-            ),
+            ..._buildPortraitContent(
+                mediaQuery, appBar as ObstructingPreferredSizeWidget),
         ],
       ),
     );
